@@ -6,9 +6,9 @@ import {
   CourseLevel,
   CourseStatus,
 } from "@/modules/courses/course.types";
-import mongoose from "mongoose";
-import { Types } from "mongoose";
+import mongoose, { Model } from "mongoose";
 import slugify from "slugify";
+
 const { Schema, model, models } = mongoose;
 
 const courseSchema = new Schema<Course>(
@@ -157,6 +157,6 @@ courseSchema.pre("save", async function (this: CourseDocument) {
   });
 });
 
-const Course = models.Course || model<Course>("Course", courseSchema);
+const Course = models.Course as Model<Course> || model<Course>("Course", courseSchema);
 
 export default Course;
