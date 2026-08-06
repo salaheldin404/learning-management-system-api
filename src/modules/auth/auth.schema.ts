@@ -15,6 +15,7 @@ export const signupSchema = z
         "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character"
       ),
     confirmPassword: z.string({ error: "Password confirmation is required" }),
+    role: z.enum(["student", "teacher"], { error: "Role must be either 'student' or 'teacher'" }),
     username: z
       .string({ error: "Username is required" })
       .trim()
