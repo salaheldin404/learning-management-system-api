@@ -1,12 +1,16 @@
 import express from "express";
 import authRoutes from "@/modules/auth/auth.routes";
+import userRoutes from "@/modules/users/user.routes";
 import globalError from "@/common/errors/error.controller";
 import AppError from "@/common/errors/appError";
+
+import cookieParser from "cookie-parser";
 
 const app = express();
 
 app.use(express.json());
 
+app.use(cookieParser());
 
 app.get("/health", (req, res) => {
   res.status(200).json({ status: "ok", message: "Server is healthy" });
@@ -14,6 +18,7 @@ app.get("/health", (req, res) => {
 
 
 app.use("/api/auth", authRoutes);
+app.use('/api/users', userRoutes)
 
 // app.use("*", (req, res, next) => {
 //   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404))
