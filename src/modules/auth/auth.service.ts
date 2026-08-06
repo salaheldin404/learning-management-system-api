@@ -25,11 +25,16 @@ export async function signupService(input: SignupInput): Promise<PublicUser> {
   }
 
   const user = await User.create(input)
-  await sendEmail({
-    to: input.email,
-    subject: 'Welcome to our platform!',
-    html: welcomeTemplate(user.username),
-  })
+  try {
+    await sendEmail({
+      to: input.email,
+      subject: 'Welcome to our platform!',
+      html: welcomeTemplate(user.username),
+    })
+  } catch (error) {
+    console.log(error)
+    // throw new AppError("There was an error sending the welcome email. Try again later!", 500);
+  }
   return user
 
 }

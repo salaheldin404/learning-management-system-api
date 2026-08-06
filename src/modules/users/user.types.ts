@@ -1,3 +1,5 @@
+import { Types } from "mongoose";
+
 export type UserRole = "student" | "teacher" | "admin";
 
 export interface SocialMedia {
@@ -24,6 +26,15 @@ export interface ProfilePicture {
   url: string | null;
 }
 
+interface Certificate {
+  courseId: Types.ObjectId;
+  issuedAt: Date;
+  certificateUrl: {
+    public_id: string;
+    url: string;
+  }
+}
+
 export interface User extends Document {
   id : string;
   username: string;
@@ -36,6 +47,10 @@ export interface User extends Document {
   role: UserRole;
   profilePicture: ProfilePicture;
   slug: string;
+  enrolledCourses: Types.ObjectId[];
+  createdCourses: Types.ObjectId[];
+  completedCourses: Types.ObjectId[];
+  certificates: Certificate[];
   passwordResetToken?: string;
   passwordResetExpires?: Date;
   passwordChangedAt?: Date;
@@ -44,3 +59,10 @@ export interface User extends Document {
 }
 
 export type PublicUser = Omit<User, "password" | "passwordResetToken" | "passwordResetExpires" | "passwordChangedAt">;
+
+
+export interface UserMethods {
+  changePasswordAfter(jwtTimestamp: number): boolean;
+  createResetToken(): string;
+  comparePassword(candidatePassword: string): Promise<boolean>;
+}

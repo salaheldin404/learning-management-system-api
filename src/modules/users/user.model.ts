@@ -3,14 +3,15 @@ import bcrypt from "bcrypt";
 import crypto from "crypto";
 
 import slugify from "slugify";
-import type { User } from "./user.types";
-import { socialValidator } from "./user.utils";
+import type { User as UserType, UserMethods } from "./user.types";
+import { socialValidator } from "@/common/validators/social.validator";
+import { Model } from "mongoose";
 
-type UserDocument = HydratedDocument<User>;
+type UserDocument = HydratedDocument<UserType, UserMethods>;
 
 const { Schema, model, models } = mongoose;
 
-const userSchema = new Schema<User>(
+const userSchema = new Schema<UserType>(
   {
     username: {
       type: String,
@@ -104,6 +105,19 @@ const userSchema = new Schema<User>(
       public_id: { type: String, default: null },
       url: { type: String, default: null },
     },
+    enrolledCourses: [{ type: Schema.Types.ObjectId, ref: "Course" }],
+    createdCourses: [{ type: Schema.Types.ObjectId, ref: "Course" }],
+    completedCourses: [{ type: Schema.Types.ObjectId, ref: "Course" }],
+    certificates: [
+      {
+        course: { type: Schema.Types.ObjectId, ref: "Course" },
+        issuedAt: { type: Date, default: Date.now },
+        certificateUrl: {
+          public_id: { type: String, required: true },
+          url: { type: String, required: true },
+        },
+      },
+    ],
     slug: {
       type: String,
       unique: true,
@@ -198,12 +212,14 @@ userSchema.methods.createResetToken = function (this: UserDocument) {
     .createHash("sha256")
     .update(resetToken)
     .digest("hex");
-  this.passwordResetExpires = new Date(Date.now() + 10 * 60 * 1000); 
+  this.passwordResetExpires = new Date(Date.now() + 10 * 60 * 1000);
 
   return resetToken;
 };
 
-const User = models.User || model("User", userSchema);
+type UserModel = Model<UserType, {}, UserMethods>;
+
+const User = model<UserType, UserModel>("User", userSchema);
 
 export default User;
 
