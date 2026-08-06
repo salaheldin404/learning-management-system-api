@@ -11,6 +11,6 @@ export interface Progress {
 }
 
 interface CompletedLessons {
-  lessonId: Types.ObjectId;
+  lesson: Types.ObjectId;
   completionDate: Date;
 }

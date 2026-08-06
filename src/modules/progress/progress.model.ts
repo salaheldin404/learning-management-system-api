@@ -11,7 +11,7 @@ const progressSchema = new Schema<Progress>(
 
     completedLessons: [
       {
-        lessonId: {
+        lesson: {
           type: Schema.Types.ObjectId,
           ref: "Lesson",
           required: true,
