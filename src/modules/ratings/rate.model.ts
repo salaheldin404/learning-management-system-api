@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Model } from "mongoose";
 import { Rating } from "@/modules/ratings/rating.types";
 
 const { Schema, model, models } = mongoose;
@@ -13,6 +13,7 @@ const ratingSchema = new Schema<Rating>(
     course: {
       type: Schema.Types.ObjectId,
       ref: "Course",
+      required: true,
     },
 
     rate: {
@@ -33,6 +34,6 @@ const ratingSchema = new Schema<Rating>(
 
 ratingSchema.index({ course: 1, rate: 1 });
 
-const RatingModel = models.Rating || model<Rating>("Rating", ratingSchema);
+const RatingModel = models.Rating as Model<Rating> || model<Rating>("Rating", ratingSchema);
 
 export default RatingModel;
